@@ -11,13 +11,23 @@ import com.netflix.rest.dto.SeasonDto;
 import com.netflix.rest.model.TvShow;
 import com.netflix.rest.service.SeasonServiceI;
 
+/**
+ * The Class SeasonController.
+ */
 @RestController
 public class SeasonController {
 
+	/** The season service. */
 	@Autowired
 	@Qualifier("SeasonServiceImpl")
 	private SeasonServiceI seasonService;
 	
+	/**
+	 * Find season by id and tv show.
+	 * @param tvShowId the tv show id
+	 * @param seasonNumber the season number
+	 * @return the season dto
+	 */
 	@GetMapping("/tvShow/{tvShowId}/seasons/{seasonNumber}")
 	public SeasonDto findSeasonByIdAndTvShow(@PathVariable Long tvShowId, @PathVariable int seasonNumber) {
 		TvShow tvShow = new TvShow();
@@ -25,6 +35,11 @@ public class SeasonController {
 		return seasonService.findSeasonByNumberAndTvShow(seasonNumber, tvShow);
 	}
 	
+	/**
+	 * List tv show by category id.
+	 * @param tvShowId the tv show id
+	 * @return the list
+	 */
 	@GetMapping("/tvShow/{tvShowId}/seasons)")
 	public List<SeasonDto> listTvShowByCategoryId(@PathVariable Long tvShowId) {
 		TvShow tvShow = new TvShow();

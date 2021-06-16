@@ -13,17 +13,27 @@ import com.netflix.rest.model.TvShow;
 import com.netflix.rest.repository.SeasonRepository;
 import com.netflix.rest.service.SeasonServiceI;
 
+/**
+ * The Class SeasonServiceImpl.
+ */
 @Service
 @Qualifier("SeasonServiceImpl")
 public class SeasonServiceImpl implements SeasonServiceI {
 	
+	/** The model mapper. */
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	/** The season repository. */
 	@Autowired
 	@Qualifier("SeasonRepository")
 	private SeasonRepository seasonRepository;
 	
+	/**
+	 * List seasons by tv show.
+	 * @param tvShow the tv show
+	 * @return the list
+	 */
 	@Override
 	public List<SeasonDto> listSeasonsByTvShow(TvShow tvShow) {
 		return seasonRepository.findByTvShow(tvShow)
@@ -32,6 +42,12 @@ public class SeasonServiceImpl implements SeasonServiceI {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Find season by number and tv show.
+	 * @param seasonNumber the season number
+	 * @param tvShow the tv show
+	 * @return the season dto
+	 */
 	@Override
 	public SeasonDto findSeasonByNumberAndTvShow(int seasonNumber, TvShow tvShow) {
 		return modelMapper.map(seasonRepository.findByNumberAndTvShow(seasonNumber,tvShow), SeasonDto.class);

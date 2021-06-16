@@ -1,21 +1,19 @@
 package com.netflix.rest.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,8 +23,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+
+/**
+ * Instantiates a new category.
+ */
 @NoArgsConstructor
-@Builder
 public class Category {
 	
 	@Id
@@ -37,12 +38,7 @@ public class Category {
 	@Column(name = "NAME", unique = true, length = 60)
 	@NotNull
 	private String name;
-	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "category")
-	@ManyToMany
-	@JoinTable(
-	  name = "CATEGORY_TVSHOW", 
-	  joinColumns = @JoinColumn(name = "category_id"), 
-	  inverseJoinColumns = @JoinColumn(name = "tv_show_id"))
-	private List<TvShow> tvShow;
+	@ManyToMany(mappedBy = "category", fetch = FetchType.LAZY)
+	private Set<TvShow> tvShow;
 	
 } 
