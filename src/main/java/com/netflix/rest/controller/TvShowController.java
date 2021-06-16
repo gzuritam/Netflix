@@ -22,8 +22,8 @@ import com.netflix.rest.model.Category;
 import com.netflix.rest.model.TvShow;
 import com.netflix.rest.service.CategoryServiceI;
 import com.netflix.rest.service.TvShowServiceI;
+import com.netflix.rest.utility.ConstantResponse;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TvShowController.
  */
@@ -70,12 +70,24 @@ public class TvShowController {
 	 */
 	@PostMapping("/tvShows/addCategories/{tvShowId}/")
 	public ResponseEntity<String> addCategoriesToTvShow(@PathVariable Long tvShowId, @RequestParam Set<Long> listCategories) {
+		ResponseEntity<String> response = null;
 		Set<Category> categories = categoryService.listCategoriesByIds(listCategories);
 		TvShow tvShow = tvShowService.findById(tvShowId);
-		tvShow.getCategory().addAll(categories);
-		tvShowService.updateTvShow(tvShow);
-		return ResponseEntity.status(HttpStatus.OK)
-							 .body("Se ha insertado las nuevas categorías " + categories.stream().map(cat -> cat.getId().toString()).collect(Collectors.joining(",")) + " correctamente");
+		if(categories.size() > 0 && tvShow != null) {
+			tvShow.getCategory().addAll(categories);
+			tvShowService.updateTvShow(tvShow);
+			
+			StringBuilder builderStr = new StringBuilder();
+			builderStr.append("Se ha insertado las nuevas categorías ");
+			builderStr.append(categories.stream().map(cat -> cat.getId().toString()).collect(Collectors.joining(",")));
+			builderStr.append(" correctamente.");
+			
+			response = ResponseEntity.status(HttpStatus.OK).body(builderStr.toString());
+		} else {
+			response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ConstantResponse.ERROR_ADDCATEGORIES_TO_TVSHOW);
+		}
+
+		return response; 
 	}
 	
 	/**
@@ -86,11 +98,18 @@ public class TvShowController {
 	 */
 	@PostMapping("/tvShows/{tvShowId}/updateName/{tvShowName}/")
 	public ResponseEntity<String> updateTvShowName(@PathVariable Long tvShowId, @PathVariable String tvShowName) {
+		ResponseEntity<String> response = null;
 		TvShow tvShow = tvShowService.findById(tvShowId);
-		tvShow.setName(tvShowName);
-		tvShowService.updateTvShow(tvShow);
-		return ResponseEntity.status(HttpStatus.OK)
-				 .body("Se ha actualizado el nombre correctamente.");
+
+		if(tvShow != null) {
+			tvShow.setName(tvShowName);
+			tvShowService.updateTvShow(tvShow);
+			response = ResponseEntity.status(HttpStatus.OK).body(ConstantResponse.OK_UPDATE_TVSHOW_BY_NAME);
+		} else {
+			response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ConstantResponse.ERROR_TVSHOW_NOT_EXIST_BY_ID);
+		}
+		
+		return response;
 	}
 	
 	
@@ -101,9 +120,16 @@ public class TvShowController {
 	 */
 	@PostMapping("/tvShows/deleteBy/{tvShowId}")
 	public ResponseEntity<String> deleteTvShowById(@PathVariable Long tvShowId) {
-		tvShowService.deleteById(tvShowId);
-		return ResponseEntity.status(HttpStatus.OK)
-				 .body("Se ha eliminado correctamente.");
+		ResponseEntity<String> response = null;
+
+		if(tvShowService.findById(tvShowId) != null) {
+			tvShowService.deleteById(tvShowId);
+			response = ResponseEntity.status(HttpStatus.OK).body(ConstantResponse.OK_DELETE_TVSHOW);
+		} else {
+			response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ConstantResponse.ERROR_TVSHOW_NOT_EXIST_BY_ID);
+		}
+		 
+		 return response;
 	}
 	
 

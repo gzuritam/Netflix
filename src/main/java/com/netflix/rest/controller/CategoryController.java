@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.netflix.rest.dto.CategoryDto;
 import com.netflix.rest.service.CategoryServiceI;
+import com.netflix.rest.utility.ConstantResponse;
 
 @RestController
 public class CategoryController {
@@ -33,7 +34,7 @@ public class CategoryController {
 		if(dto != null) {
 			response = ResponseEntity.status(HttpStatus.OK).body(dto);
 		} else {
-			response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se ha encontrado la categoría solicitada.");
+			response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ConstantResponse.ERROR_CATEGORY_NOT_FOUND);
 		}
 		return response;
 	}

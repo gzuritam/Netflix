@@ -37,7 +37,8 @@ public class TvShowServiceImpl implements TvShowServiceI {
 	 */
 	@Override
 	public TvShowDto findTvShowById(Long tvShowId) {
-		return modelMapper.map(tvShowRepository.findById(tvShowId).get(), TvShowDto.class);
+		TvShow tvShow = findById(tvShowId);
+		return tvShow != null ? modelMapper.map(tvShow, TvShowDto.class) : null;
 	}
 
 	/**
@@ -60,7 +61,7 @@ public class TvShowServiceImpl implements TvShowServiceI {
 	 */
 	@Override
 	public TvShow findById(Long tvShowId) {
-		return tvShowRepository.findById(tvShowId).get();
+		return tvShowRepository.findById(tvShowId).orElse(null);
 	}
 
 	/**

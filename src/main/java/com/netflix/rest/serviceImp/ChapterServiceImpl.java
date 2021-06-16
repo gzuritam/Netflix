@@ -54,8 +54,8 @@ public class ChapterServiceImpl implements ChapterServiceI {
 	 */
 	@Override
 	public ChapterDto getChapterByTvShowAndSeasonNumberAndChapterNumber(long tvShowId, int seasonNumber, int chapterNumber) {
-		return modelMapper.map(chapterRepository
-				.getChapterByTvShowAndSeasonNumberAndChapterNumber(tvShowId, seasonNumber, chapterNumber), ChapterDto.class);
+		Chapter chapter = chapterRepository.getChapterByTvShowAndSeasonNumberAndChapterNumber(tvShowId, seasonNumber, chapterNumber);
+		return chapter != null ? modelMapper.map(chapter, ChapterDto.class) : null;
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class ChapterServiceImpl implements ChapterServiceI {
 	 */
 	@Override
 	public Chapter findById(Long chapterId) {
-		return chapterRepository.findById(chapterId).get();
+		return chapterRepository.findById(chapterId).orElse(null);
 	}
 	
 	

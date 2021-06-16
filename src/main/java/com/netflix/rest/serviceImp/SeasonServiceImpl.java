@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.netflix.rest.dto.SeasonDto;
+import com.netflix.rest.model.Season;
 import com.netflix.rest.model.TvShow;
 import com.netflix.rest.repository.SeasonRepository;
 import com.netflix.rest.service.SeasonServiceI;
@@ -50,7 +51,8 @@ public class SeasonServiceImpl implements SeasonServiceI {
 	 */
 	@Override
 	public SeasonDto findSeasonByNumberAndTvShow(int seasonNumber, TvShow tvShow) {
-		return modelMapper.map(seasonRepository.findByNumberAndTvShow(seasonNumber,tvShow), SeasonDto.class);
+		Season season = seasonRepository.findByNumberAndTvShow(seasonNumber,tvShow);
+		return season != null ? modelMapper.map(season, SeasonDto.class) : null;
 	}
 	
 	

@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import com.netflix.rest.dto.SeasonDto;
 import com.netflix.rest.model.TvShow;
 import com.netflix.rest.service.SeasonServiceI;
+import com.netflix.rest.utility.ConstantResponse;
 
 /**
  * The Class SeasonController.
@@ -26,13 +29,21 @@ public class SeasonController {
 	 * Find season by id and tv show.
 	 * @param tvShowId the tv show id
 	 * @param seasonNumber the season number
-	 * @return the season dto
+	 * @return response entity
 	 */
 	@GetMapping("/tvShow/{tvShowId}/seasons/{seasonNumber}")
-	public SeasonDto findSeasonByIdAndTvShow(@PathVariable Long tvShowId, @PathVariable int seasonNumber) {
+	public ResponseEntity<Object> findSeasonByIdAndTvShow(@PathVariable Long tvShowId, @PathVariable int seasonNumber) {
+		ResponseEntity<Object> response = null;
 		TvShow tvShow = new TvShow();
 		tvShow.setId(tvShowId);
-		return seasonService.findSeasonByNumberAndTvShow(seasonNumber, tvShow);
+		SeasonDto seasonDto = seasonService.findSeasonByNumberAndTvShow(seasonNumber, tvShow);
+		if(seasonDto != null) {
+			response = ResponseEntity.status(HttpStatus.OK).body(seasonDto);
+		} else {
+			response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ConstantResponse.RESULT_NOT_FOUND);
+		}
+		
+		return response;
 	}
 	
 	/**
