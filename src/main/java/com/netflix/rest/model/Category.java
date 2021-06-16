@@ -23,10 +23,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-
-/**
- * Instantiates a new category.
- */
 @NoArgsConstructor
 public class Category {
 	
