@@ -10,10 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.netflix.rest.dto.SeasonDto;
 import com.netflix.rest.exception.NetflixException;
-import com.netflix.rest.model.TvShow;
 import com.netflix.rest.repository.SeasonRepository;
 import com.netflix.rest.service.SeasonServiceI;
-import com.netflix.rest.service.TvShowServiceI;
 
 /**
  * The Class SeasonServiceImpl.

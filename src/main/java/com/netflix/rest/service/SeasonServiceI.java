@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.netflix.rest.dto.SeasonDto;
 import com.netflix.rest.exception.NetflixException;
-import com.netflix.rest.model.TvShow;
 
 /**
  * The Interface SeasonServiceI.

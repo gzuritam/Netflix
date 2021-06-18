@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.netflix.rest.model.Season;
-import com.netflix.rest.model.TvShow;
 
 /**
  * The Interface SeasonRepository.

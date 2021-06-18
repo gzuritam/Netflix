@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.netflix.rest.dto.TvShowDto;
 import com.netflix.rest.exception.NetflixException;
-import com.netflix.rest.model.Category;
-import com.netflix.rest.model.TvShow;
 
 /**
  * The Interface TvShowServiceI.

@@ -10,7 +10,7 @@ public abstract class NetflixException extends Exception {
 	private static final long serialVersionUID = -7482635401716007171L;
 
 	private final int code;
-
+	
 	private final List<ErrorDto> errorList = new ArrayList<>();
 
 	public NetflixException(final int code, final String message) {

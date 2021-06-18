@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.netflix.rest.dto.ChapterDto;
 import com.netflix.rest.exception.NetflixException;
-import com.netflix.rest.model.Chapter;
 
 // TODO: Auto-generated Javadoc
 /**

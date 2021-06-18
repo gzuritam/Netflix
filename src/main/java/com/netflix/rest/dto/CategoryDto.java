@@ -1,18 +1,9 @@
 package com.netflix.rest.dto;
 
 import java.io.Serializable;
-import java.util.List;
-import org.mapstruct.Mapper;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.netflix.rest.model.TvShow;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
