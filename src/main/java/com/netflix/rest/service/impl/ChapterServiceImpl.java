@@ -1,18 +1,19 @@
-package com.netflix.rest.serviceImp;
+package com.netflix.rest.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.netflix.rest.dto.ChapterDto;
+import com.netflix.rest.exception.NetflixException;
+import com.netflix.rest.exception.NotFoundException;
 import com.netflix.rest.model.Chapter;
-import com.netflix.rest.model.Season;
-import com.netflix.rest.model.TvShow;
 import com.netflix.rest.repository.ChapterRepository;
 import com.netflix.rest.service.ChapterServiceI;
+import com.netflix.rest.utility.constants.ExceptionConstants;
 
 /**
  * The Class ChapterServiceImpl.
@@ -37,9 +38,9 @@ public class ChapterServiceImpl implements ChapterServiceI {
 	 * @return the list
 	 */
 	@Override
-	public List<ChapterDto> listByTvShowAndSeasonNumber(long tvShowId, int seasonNumber) {
+	public List<ChapterDto> listByTvShowAndSeasonNumber(Long tvShowId, int seasonNumber) throws NetflixException {
 		
-		return chapterRepository.listByTvShowAndSeasonNumber(tvShowId, seasonNumber)
+		return chapterRepository.findBySeasonTvShowIdAndSeasonNumber(tvShowId, seasonNumber)
 				.stream()
 				.map(chapter -> modelMapper.map(chapter, ChapterDto.class))
 				.collect(Collectors.toList());
@@ -53,9 +54,11 @@ public class ChapterServiceImpl implements ChapterServiceI {
 	 * @return the chapter by tv show and season number and chapter number
 	 */
 	@Override
-	public ChapterDto getChapterByTvShowAndSeasonNumberAndChapterNumber(long tvShowId, int seasonNumber, int chapterNumber) {
-		Chapter chapter = chapterRepository.getChapterByTvShowAndSeasonNumberAndChapterNumber(tvShowId, seasonNumber, chapterNumber);
-		return chapter != null ? modelMapper.map(chapter, ChapterDto.class) : null;
+	public ChapterDto getChapterByTvShowAndSeasonNumberAndChapterNumber(Long tvShowId, int seasonNumber,
+			int chapterNumber) throws NetflixException {
+		Chapter chapter = chapterRepository.getChapterByTvShowAndSeasonNumberAndChapterNumber(tvShowId, seasonNumber,
+				chapterNumber).orElseThrow(() -> new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_CHAPTER));
+		return modelMapper.map(chapter, ChapterDto.class);
 	}
 
 	/**
@@ -64,21 +67,13 @@ public class ChapterServiceImpl implements ChapterServiceI {
 	 * @return the chapter
 	 */
 	@Override
-	public Chapter updateChapter(Chapter chapter) {
-		return chapterRepository.save(chapter);
+	public ChapterDto updateChapterName(Long tvShowId, int seasonNumber, int chapterNumber, String chapterName)
+			throws NetflixException {
+		Chapter chapter = chapterRepository.getChapterByTvShowAndSeasonNumberAndChapterNumber(tvShowId, seasonNumber,
+				chapterNumber).orElseThrow(() -> new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_CHAPTER));
+		chapter.setName(chapterName);
+		chapterRepository.save(chapter);
+		return modelMapper.map(chapter, ChapterDto.class);
 	}
-
-	/**
-	 * Find by id.
-	 * @param chapterId the chapter id
-	 * @return the chapter
-	 */
-	@Override
-	public Chapter findById(Long chapterId) {
-		return chapterRepository.findById(chapterId).orElse(null);
-	}
-	
-	
-
 	
 }

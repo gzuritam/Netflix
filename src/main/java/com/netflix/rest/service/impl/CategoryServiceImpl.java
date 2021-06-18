@@ -1,4 +1,4 @@
-package com.netflix.rest.serviceImp;
+package com.netflix.rest.service.impl;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.netflix.rest.dto.CategoryDto;
+import com.netflix.rest.exception.NetflixException;
+import com.netflix.rest.exception.NotFoundException;
 import com.netflix.rest.model.Category;
 import com.netflix.rest.repository.CategoryRepository;
 import com.netflix.rest.service.CategoryServiceI;
+import com.netflix.rest.utility.constants.ExceptionConstants;
 
 /**
  * The Class CategoryServiceImpl.
@@ -33,13 +36,15 @@ public class CategoryServiceImpl implements CategoryServiceI {
 	
 	/**
 	 * Find by id.
-	 * @param id the id
+	 * @param id the id	
 	 * @return the category dto
 	 */
 	@Override
-	public CategoryDto findById(Long id) {
-		Category category = categoryRepository.findById(id).orElse(null);
-		return category != null ? modelMapper.map(category, CategoryDto.class) : null;
+	public CategoryDto findById(Long id) throws NetflixException {
+		return modelMapper.map(
+				categoryRepository.findById(id)
+					.orElseThrow(() -> new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_CATEGORY)),
+				CategoryDto.class);
 	}
 	
 	/**
@@ -47,7 +52,7 @@ public class CategoryServiceImpl implements CategoryServiceI {
 	 * @return the list
 	 */
 	@Override
-	public List<CategoryDto> listAllCategories() {
+	public List<CategoryDto> listAllCategories() throws NetflixException {
 		return this.categoryRepository.findAll()
 				.stream()
 				.map(category -> modelMapper.map(category, CategoryDto.class))
@@ -60,7 +65,7 @@ public class CategoryServiceImpl implements CategoryServiceI {
 	 * @return the sets the
 	 */
 	@Override
-	public Set<Category> listCategoriesByIds(Set<Long> listCategoriesIds) {
+	public Set<Category> listCategoriesByIds(Set<Long> listCategoriesIds) throws NetflixException {
 		return new HashSet<>(categoryRepository.findAllById(listCategoriesIds));
 	}
 

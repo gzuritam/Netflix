@@ -1,11 +1,10 @@
 package com.netflix.rest.dto;
 
 import java.io.Serializable;
+import java.time.Year;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.netflix.rest.model.Category;
 
 import lombok.Getter;
 import lombok.Setter;

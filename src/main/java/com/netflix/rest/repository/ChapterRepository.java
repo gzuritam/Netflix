@@ -1,6 +1,11 @@
+/*
+ * @author sinsajoTeam
+ * @version 1.0
+ */
 package com.netflix.rest.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,16 +22,12 @@ import com.netflix.rest.model.Chapter;
 public interface ChapterRepository extends JpaRepository<Chapter, Long> {
 	
 	/**
-	 * List by tv show and season number.
+	 * Find by season tv show id and season number.
 	 * @param tvShowId the tv show id
 	 * @param seasonNumber the season number
 	 * @return the list
 	 */
-	@Query(value = "SELECT c.* FROM CHAPTERS c "
-			+ " LEFT JOIN SEASONS s ON c.season_id = s.id "
-			+ " LEFT JOIN TV_SHOWS t ON s.tv_show_id = t.id "
-			+ " WHERE t.id = ?1 and s.number = ?2 ", nativeQuery = true)
-	List<Chapter> listByTvShowAndSeasonNumber(long tvShowId, int seasonNumber);
+	List<Chapter> findBySeasonTvShowIdAndSeasonNumber(long tvShowId, int seasonNumber);
 	
 	/**
 	 * Gets the chapter by tv show and season number and chapter number.
@@ -40,6 +41,6 @@ public interface ChapterRepository extends JpaRepository<Chapter, Long> {
 			+ " LEFT JOIN TV_SHOWS t ON s.tv_show_id = t.id "
 			+ " WHERE t.id = ?1 and s.number = ?2 "
 			+ " and c.number = ?3 ", nativeQuery = true)
-	Chapter getChapterByTvShowAndSeasonNumberAndChapterNumber(long tvShowId, int seasonNumber, int chapterNumber);
+	Optional<Chapter> getChapterByTvShowAndSeasonNumberAndChapterNumber(long tvShowId, int seasonNumber, int chapterNumber);
 
 }

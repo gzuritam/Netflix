@@ -1,4 +1,4 @@
-package com.netflix.rest.serviceImp;
+package com.netflix.rest.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.netflix.rest.dto.SeasonDto;
-import com.netflix.rest.model.Season;
+import com.netflix.rest.exception.NetflixException;
 import com.netflix.rest.model.TvShow;
 import com.netflix.rest.repository.SeasonRepository;
 import com.netflix.rest.service.SeasonServiceI;
+import com.netflix.rest.service.TvShowServiceI;
 
 /**
  * The Class SeasonServiceImpl.
@@ -36,8 +37,8 @@ public class SeasonServiceImpl implements SeasonServiceI {
 	 * @return the list
 	 */
 	@Override
-	public List<SeasonDto> listSeasonsByTvShow(TvShow tvShow) {
-		return seasonRepository.findByTvShow(tvShow)
+	public List<SeasonDto> listSeasonsByTvShow(Long tvShowId) throws NetflixException {
+		return seasonRepository.findByTvShowId(tvShowId)
 				.stream()
 				.map(season -> modelMapper.map(season, SeasonDto.class))
 				.collect(Collectors.toList());
@@ -50,9 +51,8 @@ public class SeasonServiceImpl implements SeasonServiceI {
 	 * @return the season dto
 	 */
 	@Override
-	public SeasonDto findSeasonByNumberAndTvShow(int seasonNumber, TvShow tvShow) {
-		Season season = seasonRepository.findByNumberAndTvShow(seasonNumber,tvShow);
-		return season != null ? modelMapper.map(season, SeasonDto.class) : null;
+	public SeasonDto findSeasonByNumberAndTvShow(Long tvShowId, int seasonNumber) throws NetflixException {
+		return modelMapper.map(seasonRepository.findByTvShowIdAndNumber(tvShowId, seasonNumber), SeasonDto.class);
 	}
 	
 	
