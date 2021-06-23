@@ -1,6 +1,7 @@
 package com.netflix.rest.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,6 +29,6 @@ public interface SeasonRepository extends JpaRepository<Season, Long> {
 	 * @param tvShow the tv show
 	 * @return the season
 	 */
-	Season findByTvShowIdAndNumber(Long tvShowId, int seasonNumber);
+	Optional<Season> findByTvShowIdAndNumber(Long tvShowId, int seasonNumber);
 	
 }

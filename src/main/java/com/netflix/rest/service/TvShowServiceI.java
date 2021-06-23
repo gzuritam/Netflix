@@ -26,7 +26,7 @@ public interface TvShowServiceI {
 	 * @param category the category
 	 * @return the list
 	 */
-	List<TvShowDto> listTvShowByCategory(Long categoryId);
+	List<TvShowDto> listTvShowByCategory(Long categoryId) throws NetflixException;
 	
 	
 	TvShowDto updateTvShowName(Long tvShowId, String tvShowName) throws NetflixException;

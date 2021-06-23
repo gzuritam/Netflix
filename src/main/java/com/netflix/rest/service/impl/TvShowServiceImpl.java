@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.netflix.rest.dto.TvShowDto;
 import com.netflix.rest.exception.NetflixException;
+import com.netflix.rest.exception.NotFoundException;
 import com.netflix.rest.model.Category;
 import com.netflix.rest.model.TvShow;
 import com.netflix.rest.repository.TvShowRepository;
 import com.netflix.rest.service.CategoryServiceI;
 import com.netflix.rest.service.TvShowServiceI;
+import com.netflix.rest.utility.constants.ExceptionConstants;
 
 /**
  * The Class TvShowServiceImpl.
@@ -45,28 +47,31 @@ public class TvShowServiceImpl implements TvShowServiceI {
 	 */
 	@Override
 	public TvShowDto findTvShowById(Long tvShowId) throws NetflixException {
-		return modelMapper.map(tvShowRepository.findById(tvShowId).orElseThrow(), TvShowDto.class);
+		return modelMapper.map(tvShowRepository
+				.findById(tvShowId)
+				.orElseThrow(() -> new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_TVSHOW)), TvShowDto.class);
 	}
 
 	/**
 	 * List tv show by category.
 	 * @param category the category
 	 * @return the list
+	 * @throws NetflixException 
 	 */
 	@Override
-	public List<TvShowDto> listTvShowByCategory(Long categoryId) {
-		Category category = new Category();
-		category.setId(categoryId);
-		return tvShowRepository.findByCategory(category)
-				.stream()
-				.map(tvShow -> modelMapper.map(tvShow, TvShowDto.class))
-				.collect(Collectors.toList());
+	public List<TvShowDto> listTvShowByCategory(Long categoryId) throws NetflixException {
+		
+		List<TvShow> tvShows = tvShowRepository.findByCategoryId(categoryId);
+		if(tvShows.isEmpty())
+			throw new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_TVSHOW);
+		
+		return tvShows.stream().map(tvShow -> modelMapper.map(tvShow, TvShowDto.class)).collect(Collectors.toList());
 	}
 
 	@Override
 	public TvShowDto updateTvShowName(Long tvShowId, String tvShowName) throws NetflixException {
 		
-		TvShow tvShow = tvShowRepository.findById(tvShowId).orElseThrow();
+		TvShow tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_TVSHOW));
 		tvShow.setName(tvShowName);
 		tvShowRepository.save(tvShow);
 
@@ -79,12 +84,13 @@ public class TvShowServiceImpl implements TvShowServiceI {
 	 */
 	@Override
 	public void deleteById(Long id) throws NetflixException {
-		tvShowRepository.deleteById(tvShowRepository.findById(id).orElseThrow().getId());
+		tvShowRepository.deleteById(tvShowRepository.findById(id)
+													.orElseThrow(() -> new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_TVSHOW))
+													.getId());
 	}
 
 	/**
 	 * Adds the categories to tv show.
-	 *
 	 * @param tvShowId the tv show id
 	 * @param listCategories the list categories
 	 * @return the tv show dto
@@ -94,7 +100,11 @@ public class TvShowServiceImpl implements TvShowServiceI {
 	public TvShowDto addCategoriesToTvShow(Long tvShowId, Set<Long> listCategories) throws NetflixException {
 		
 		Set<Category> categories = categoryService.listCategoriesByIds(listCategories);
-		TvShow tvShow = tvShowRepository.findById(tvShowId).orElseThrow();
+		
+		if(categories.isEmpty())
+			throw new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_CATEGORY);
+		
+		TvShow tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_TVSHOW));
 		
 		if(categories.size() > 0) {
 			tvShow.getCategory().addAll(categories);

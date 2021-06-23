@@ -41,7 +41,12 @@ public class ChapterServiceImpl implements ChapterServiceI {
 	@Override
 	public List<ChapterDto> listByTvShowAndSeasonNumber(Long tvShowId, int seasonNumber) throws NetflixException {
 		
-		return chapterRepository.findBySeasonTvShowIdAndSeasonNumber(tvShowId, seasonNumber)
+		List<Chapter> chapters = chapterRepository.findBySeasonTvShowIdAndSeasonNumber(tvShowId, seasonNumber);
+		
+		if(chapters.isEmpty())
+			throw new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_CHAPTER);
+		
+		return chapters
 				.stream()
 				.map(chapter -> modelMapper.map(chapter, ChapterDto.class))
 				.collect(Collectors.toList());

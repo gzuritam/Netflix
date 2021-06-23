@@ -53,7 +53,13 @@ public class CategoryServiceImpl implements CategoryServiceI {
 	 */
 	@Override
 	public List<CategoryDto> listAllCategories() throws NetflixException {
-		return this.categoryRepository.findAll()
+		
+		List<Category> categories = categoryRepository.findAll();
+		
+		if(categories.isEmpty())
+			throw new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_CATEGORY);
+		
+		return categories
 				.stream()
 				.map(category -> modelMapper.map(category, CategoryDto.class))
 				.collect(Collectors.toList());
@@ -66,7 +72,13 @@ public class CategoryServiceImpl implements CategoryServiceI {
 	 */
 	@Override
 	public Set<Category> listCategoriesByIds(Set<Long> listCategoriesIds) throws NetflixException {
-		return new HashSet<>(categoryRepository.findAllById(listCategoriesIds));
+		
+		Set<Category> categories = new HashSet<>(categoryRepository.findAllById(listCategoriesIds));
+		
+		if(categories.isEmpty())
+			throw new NotFoundException(ExceptionConstants.MESSAGE_INEXISTENT_CATEGORY);
+		
+		return categories;
 	}
 
 	
